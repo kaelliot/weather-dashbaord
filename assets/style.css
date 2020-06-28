@@ -1,0 +1,81 @@
+body,
+h3,
+h4,
+p {
+	color: #00203fff;
+}
+
+body {
+	background-color: white;
+}
+
+.jumbotron {
+	background-color: lightblue;
+}
+
+.r2a {
+	border: 1px solid lightskyblue;
+	border-radius: 0.25rem;
+	padding-left: 1rem;
+}
+
+.btn-primary {
+	background-color: blue;
+}
+
+#buttons-view,
+#city-input {
+	margin-top: 1rem;
+	border: 1px solid blue;
+	border-radius: 0.25rem;
+}
+
+.list-group-item {
+	background-color: white;
+}
+
+.card {
+	background-color: lightblue;
+}
+
+.card-body {
+	padding: 0.35rem;
+}
+
+.uvGreen {
+	background-color: lightgreen;
+	border-radius: 5px;
+}
+
+.uvYellow {
+	background-color: lightyellow;
+	border-radius: 5px;
+}
+
+.uvOrange {
+	background-color: lightcoral;
+	border-radius: 5px;
+}
+
+.uvRed {
+	background-color: palevioletred;
+	border-radius: 5px;
+}
+
+.uvPurple {
+	background-color: lightpink;
+	border-radius: 5px;
+}
+
+img {
+	width: 15%;
+	height: 15%;
+}
+
+.card-text {
+	font-size: 10pt;
+}
+
+.forcast {
+	padding: 1rem;
+}
