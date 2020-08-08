@@ -7,18 +7,20 @@ var forecastURL = "https://api.openweathermap.org/data/2.5/forecast?q="
 let searchTerm = document.getElementById("city-input")
 
 
+
 const searchButton = document.getElementById('add-city')
 searchButton.addEventListener('click', (e) => {
     e.preventDefault()
-    const reg = /[^\s*].*[^\s*]/
+
     let searchLocation = searchTerm.value
     searchWeather(searchLocation)
     getForecast(searchLocation)
+    makeRow(searchLocation)
 })
 
 function searchWeather(location) {
     console.log(queryURL + location + APIKey + '&units=imperial')
-    fetch(queryURL + location + APIKey)
+    fetch(queryURL + location + APIKey + '&units=imperial')
         .then(response => response.json())
         .then(data => {
             console.log(data);
@@ -31,13 +33,10 @@ function searchWeather(location) {
             let date = new Date().toLocaleDateString()
 
             // select elements on the page to display data from the API
-            let currentWeatherEl = document.getElementById('currentWeather')
             let currentTempEl = document.getElementById('temp')
             let currentHumidityEl = document.getElementById('humidity')
             let nameEl = document.getElementById('city')
             let windEl = document.getElementById('wind')
-            let iconEl = document.getElementById('temp')
-            let uvEl = document.getElementById('uvIndex')
             let dateEl = document.getElementById('date')
 
             // add content to the elements
@@ -51,29 +50,53 @@ function searchWeather(location) {
 }
 
 const getUV = (lat, lon) => {
-    fetch(`http://api.openweathermap.org/data/2.5/uvi?${APIKey}&lat=${lat}&lon=${lon}`).then(res => res.json()).then(json => {
-        const UV = json.value
-        const bodyEl = document.createElement('.card-body')
-        const uvEl = document.createElement('p')
-        uvEl.textContent = `UV Index: `
+    fetch(`http://api.openweathermap.org/data/2.5/uvi?${APIKey}&lat=${lat}&lon=${lon}`).then(res => res.json()).then(data => {
+
+        const uvEl = document.querySelector('#uvIndex')
+        uvEl.textContent = ` `
         const buttonEl = document.createElement('span')
         buttonEl.classList.add('btn', 'btn-sm')
-        buttonEl.innerHTML = UV
+        buttonEl.innerHTML = `UV: ` + data.value
 
-        bodyEl.appendChild(uvEl)
+        if (data.value < 3) {
+            buttonEl.classList.add('uvYellow')
+        } else if (data.value < 7) {
+            buttonEl.classList.add('uvOrange')
+        } else {
+            buttonEl.classList.add('uvRed')
+        }
         uvEl.appendChild(buttonEl)
 
     })
 }
 
+const makeRow = (searchValue) => {
+    const liEl = document.createElement('li')
+    liEl.classList.add('list-group-item', 'list-group-item-action')
+    var text = searchValue
+    liEl.textContent = text
+
+    var historyEL = document.querySelector('.history')
+    historyEL.unclick = function (event) {
+        if (event.target.tagName === 'li') {
+            searchWeather(event.target.textContent)
+        }
+    }
+
+    historyEL.appendChild(liEl)
+}
+
 function getForecast(location) {
-    fetch(forecastURL + location + APIKey).then(response => response.json()).then(data => {
+    fetch(forecastURL + location + APIKey + '&units=imperial').then(response => response.json()).then(data => {
         console.log(data)
         var forecastEL = document.getElementById('forecast')
+        forecastEL.textContent = ` `
+
         for (let i = 0; i < data.list.length; i++) {
             if (data.list[i].dt_txt.indexOf('15:00:00') !== -1) {
 
                 const day = data.list[i];
+
                 // card data
                 const colEl = document.createElement('div')
                 colEl.classList.add('col-md-2')
@@ -87,17 +110,19 @@ function getForecast(location) {
                 humidityEl.textContent = `Humidity: ${day.main.humidity}%`
                 const bodyEl = document.createElement('div')
                 bodyEl.classList.add('card-body', 'p-2')
-                const titleEl = document.createElement('h5')
+                const titleEl = document.createElement('h6')
                 titleEl.classList.add('card-title')
-                // titleEl.textContent = new Date(day.list.dt_txt.toLocaleDateString())
+                console.log(day.list)
+
+                titleEl.textContent = `${data.city.name}`
                 const imgEl = document.createElement('img')
                 imgEl.setAttribute('src', `http://openweathermap.org/img/w/${data.list[i].weather[0].icon}.png`)
                 const p1El = document.createElement('p')
                 p1El.classList.add('card-text')
                 p1El.textContent = `Temp: ${day.main.temp_max}`
-                const p2El = document.createElement('p')
-                p2El.classList.add('card-text')
-                p2El.textContent = `Temp: ${day.main.humidity}`
+                // const p2El = document.createElement('p')
+                // p2El.classList.add('card-text')
+                // p2El.textContent = `Temp: ${day.main.humidity}`
 
                 // append elements to page
                 colEl.appendChild(cardEl)
@@ -106,7 +131,7 @@ function getForecast(location) {
                 bodyEl.appendChild(windEl)
                 bodyEl.appendChild(humidityEl)
                 bodyEl.appendChild(p1El)
-                bodyEl.appendChild(p2El)
+                // bodyEl.appendChild(p2El)
                 cardEl.appendChild(bodyEl)
                 forecastEL.appendChild(colEl)
             }

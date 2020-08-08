@@ -67,15 +67,15 @@ body {
 	border-radius: 5px;
 }
 
-img {
-	width: 15%;
-	height: 15%;
-}
+/* img {
+	width: 75%;
+	height: 75%;
+} */
 
 .card-text {
 	font-size: 10pt;
 }
 
-.forcast {
+.forecast {
 	padding: 1rem;
 }
